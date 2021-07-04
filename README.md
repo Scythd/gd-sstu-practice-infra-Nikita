@@ -1,1 +1,1 @@
-North Virginia
+us-west-2b 
