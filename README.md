@@ -1,1 +1,1 @@
-us-west-2b  Oregon
+us-east-1  N. Virginia
