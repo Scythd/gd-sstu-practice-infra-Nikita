@@ -1,1 +1,1 @@
-us-west-2b 
+us-west-2b  Oregon
