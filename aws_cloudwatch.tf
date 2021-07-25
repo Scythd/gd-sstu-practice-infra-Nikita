@@ -34,7 +34,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         "period": 5,
         "stat": "Average",
         "region": "us-east-1",
-        "title": "CPU"
+        "title": "Average ASG CPU"
       }
     },
     {
@@ -45,17 +45,13 @@ resource "aws_cloudwatch_dashboard" "main" {
       "height": 6,
       "properties": {
         "metrics": [
-          [
-            "AWS/EC2",
-            "CPUUtilization",
-            "InstanceId",
-            "i-012345"
-          ]
+           [ "AWS/EC2", "NetworkIn", "AutoScalingGroupName", "${aws_autoscaling_group.appscaling.id}" ],
+           [ ".", "NetworkOut", ".", "." ]
         ],
         "period": 5,
         "stat": "Average",
         "region": "us-east-1",
-        "title": "Memory"
+        "title": "ASG Network usage"
       }
     },
     {
@@ -66,17 +62,14 @@ resource "aws_cloudwatch_dashboard" "main" {
       "height": 6,
       "properties": {
         "metrics": [
-          [
-            "AWS/EC2",
-            "CPUUtilization",
-            "InstanceId",
-            "i-012345"
-          ]
+          [ { "expression":"SEARCH('{CWAgent,AutoScalingGroupName,ImageId,InstanceId,InstanceType,device,fstype,path} overlay disk_used_percent', 'Average', 60)", 
+	      "id": "e1", 
+              "period": 60 } ]
         ],
         "period": 5,
         "stat": "Average",
         "region": "us-east-1",
-        "title": "Disk"
+        "title": "Per instance disk usage percent"
       }
     },
     {
@@ -87,17 +80,50 @@ resource "aws_cloudwatch_dashboard" "main" {
       "height": 6,
       "properties": {
         "metrics": [
-          [
-            "AWS/EC2",
-            "CPUUtilization",
-            "InstanceId",
-            "i-012345"
-          ]
+          [ { "expression":"SEARCH('{CWAgent,AutoScalingGroupName,ImageId,InstanceId,InstanceType}', 'Average', 60)",
+          "id": "e1",
+          "period": 60 }]
         ],
         "period": 5,
         "stat": "Average",
         "region": "us-east-1",
-        "title": "Network usage"
+        "title": "Per instance memory usage percent"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 14,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ { "expression":"SEARCH('{CWAgent,AutoScalingGroupName,ImageId,InstanceId,InstanceType,cpu} cpu_usage_user', 'Average', 60)", 
+            "id": "e1", 
+            "period": 60 }]
+        ],
+        "period": 5,
+        "stat": "Average",
+        "region": "us-east-1",
+        "title": "Per instance cpu usage percent"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 13,
+      "y": 14,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ { "expression":"SEARCH('{CWAgent,AutoScalingGroupName,ImageId,InstanceId,InstanceType,name} xvda1', 'Average', 60)", 
+            "id": "e1", 
+            "period": 60 }]
+        ],
+        "period": 5,
+        "stat": "Average",
+        "region": "us-east-1",
+        "title": "Per instance disk IO"
       }
     }
   ]

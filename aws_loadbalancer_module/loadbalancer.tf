@@ -1,3 +1,7 @@
+data "aws_elb" "elb_exist" {
+  name = "app-terraform-elb"
+}
+
 resource "aws_elb" "load_balancer" {
   name            = "app-terraform-elb"
   security_groups = ["${aws_security_group.sglb2.id}"]
@@ -19,7 +23,7 @@ resource "aws_elb" "load_balancer" {
     interval            = 180
   }
 
-  instances                   = [aws_instance.app.id]
+  instances                   = data.aws_elb.elb_exist.instances
   cross_zone_load_balancing   = true
   idle_timeout                = 400
   connection_draining         = true
